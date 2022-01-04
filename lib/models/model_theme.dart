@@ -1,0 +1,25 @@
+import 'package:flutter/material.dart';
+
+class ThemeModel {
+  final String name;
+  final Color color;
+  final String lightTheme;
+  final String darkTheme;
+
+  ThemeModel(
+    this.name,
+    this.color,
+    this.lightTheme,
+    this.darkTheme,
+  );
+
+  factory ThemeModel.fromJson(Map<String, dynamic> json) {
+    // if (json == null) return null;
+    return ThemeModel(
+      json['name'] ?? "Unknown",
+      json['color'] ?? Colors.black,
+      json['light'] ?? "Unknown",
+      json['dark'] ?? "Unknown",
+    );
+  }
+}
