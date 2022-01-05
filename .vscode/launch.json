@@ -14,6 +14,19 @@
             "request": "launch",
             "type": "dart",
             "flutterMode": "debug"
-        }
+        },
+        {
+            "name": "relax reno5",
+            "request": "launch",
+            "type": "dart",
+            "deviceId": "c2696ad0"
+        },
+        {
+            "name": "relax debug reno5",
+            "request": "launch",
+            "type": "dart",
+            "flutterMode": "debug",
+            "deviceId": "c2696ad0"
+        },
     ]
 }

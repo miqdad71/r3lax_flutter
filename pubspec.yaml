@@ -16,7 +16,9 @@ dependencies:
   dio: ^4.0.4
   flutter_bloc: ^8.0.1
   intl: ^0.17.0
+  intro_views_flutter: ^3.2.0
   shared_preferences: ^2.0.11
+  shimmer: ^2.0.0
   # flutter_inappwebview: ^5.0.5+2
   # fluttertoast: ^8.0.8
   # geolocator: ^8.0.1

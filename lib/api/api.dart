@@ -17,9 +17,10 @@ class Api {
       {required String username, required String password}) async {
     // await Future.delayed(Duration(seconds: 1));
     // final result = await UtilData.login();
-    final result = await HTTPManager()
-        .post(url: AUTH_LOGIN, data: {username: username, password: password});
-    return ResultApiModel.fromJson(result);
+    final result = await HTTPManager().post(
+        url: AUTH_LOGIN, data: {'username': username, 'password': password});
+    // return ResultApiModel.fromJson(result);
+    return result;
   }
 
   // ///Validate token valid

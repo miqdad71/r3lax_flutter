@@ -47,9 +47,29 @@ class _AppState extends State<App> {
         supportedLocales: AppLanguage.supportLanguage,
         home: BlocBuilder<ApplicationBloc, ApplicationState>(
           builder: (context, app) {
-            return Container(
-              child: SignIn(),
-            );
+            if (app is ApplicationSetupCompleted) {
+              return BlocBuilder<AuthBloc, AuthenticationState>(
+                builder: (context, auth) {
+                  return auth is AuthenticationSuccess
+                      ? Profile()
+                      : const SignIn();
+                },
+              );
+            }
+            if (app is ApplicationIntroView) {
+              return IntroPreview();
+              // return Scaffold(
+              //   body: Container(
+              //     child: Center(child: Text("Intro view")),
+              //   ),
+              // );
+            }
+            return SplashScreen();
+            // return Scaffold(
+            //   body: Container(
+            //     child: Center(child: Text("Splash screen")),
+            //   ),
+            // );
           },
         ),
       ),

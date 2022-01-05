@@ -1,5 +1,5 @@
 class Preferences {
-  static String reviewIntro = 'review';
+  static String reviewIntro = 'onboarding';
   static String business = 'business';
   static String user = 'user';
   static String language = 'language';

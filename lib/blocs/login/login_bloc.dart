@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:bloc/bloc.dart';
+import 'package:relaxf/utils/util.dart';
 import '../bloc.dart';
 import '../../repository/repository.dart';
 // import 'package:listar_flutter/blocs/bloc.dart';
@@ -21,6 +22,8 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
       );
 
       ///Case API fail but not have token
+      UtilLogger.log("LOGIN", user);
+
       if (user != null) {
         ///Begin start AuthBloc Event AuthenticationSave
         AppBloc.authBloc.add(AuthenticationSave(user));

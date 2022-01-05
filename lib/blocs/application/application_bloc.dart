@@ -30,18 +30,22 @@ class ApplicationBloc extends Bloc<ApplicationEvent, ApplicationState> {
       ///Authentication begin check
       AppBloc.authBloc.add(AuthenticationCheck());
 
-      ///First or After upgrade version show intro preview app
-      //   final hasReview = UtilPreferences.containsKey(
-      //     '${Preferences.reviewIntro}.${Application.version}',
-      //   );
-      //   if (hasReview) {
-      //     ///Become app
-      //     yield ApplicationSetupCompleted();
-      //   } else {
-      //     ///Pending preview intro
-      //     yield ApplicationIntroView();
-      //   }
-      // }
+      ///Dummy delay
+      await Future.delayed(const Duration(milliseconds: 2500));
+
+      ///First or After upgrade version show onboarding page
+      final hasOnboard = UtilPreferences.containsKey(
+            '${Preferences.reviewIntro}.${Application.version}',
+          ) ??
+          false;
+
+      if (hasOnboard) {
+        ///Show app
+        emit(ApplicationSetupCompleted());
+      } else {
+        ///Show onboarding
+        emit(ApplicationIntroView());
+      }
     });
 
     on<OnCompletedIntro>((event, emit) async {

@@ -18,13 +18,15 @@ class UserRepository {
       password: password,
     );
 
-    ///Case API fail but not have token
-    if (result.success) {
-      ///Login API success
-      return UserModel.fromJson(result.data);
-    }
+    return UserModel.fromJson(result);
 
-    return null;
+    // ///Case API fail but not have token
+    // if (result.success) {
+    //   ///Login API success
+    //   return UserModel.fromJson(result.data);
+    // }
+
+    // return null;
   }
 
   ///Fetch api validToken
@@ -55,7 +57,7 @@ class UserRepository {
   }
 
   Future<void> deleteUser({UserModel? user}) async {
-    await application.setUser(user!);
+    // await application.setUser(null);
     await UtilPreferences.remove(Preferences.user);
   }
 
