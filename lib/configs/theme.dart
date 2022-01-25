@@ -13,7 +13,7 @@ class AppTheme {
   static Color kashmirColor = const Color.fromRGBO(93, 109, 126, 1);
 
   ///Default font
-  static String currentFont = "Raleway";
+  static String currentFont = "Roboto";
 
   ///List Font support
   static List<String> fontSupport = [
@@ -27,14 +27,20 @@ class AppTheme {
   static ThemeModel currentTheme = ThemeModel.fromJson({
     "name": "default",
     "color": const Color(0xffe5634d),
-    "light": "primaryLight",
-    "dark": "primaryDark",
+    "light": "relaxLight",
+    "dark": "relaxDark",
   });
 
   ///List Theme Support in Application
   static List themeSupport = [
     {
       "name": "default",
+      "color": const Color(0xffe5634d),
+      "light": "relaxLight",
+      "dark": "relaxDark",
+    },
+    {
+      "name": "basic",
       "color": const Color(0xffe5634d),
       "light": "primaryLight",
       "dark": "primaryDark",

@@ -8,6 +8,11 @@ class Routes {
   // static const String signUp = "/signUp";
   static const String forgotPassword = "/forgotPassword";
   static const String home = "/home";
+  static const String profile = "/profile";
+  static const String attendanceForm = "/attendanceForm";
+  static const String attendanceList = "/attendanceList";
+  static const String r3forms = "/r3forms";
+  static const String scanqr = "/scanqr";
 
   Route<dynamic> generateRoute(RouteSettings settings) {
     switch (settings.name) {
@@ -15,6 +20,13 @@ class Routes {
         return MaterialPageRoute(
           builder: (context) {
             return const SignIn();
+          },
+        );
+
+      case profile:
+        return MaterialPageRoute(
+          builder: (context) {
+            return Profile();
           },
         );
 

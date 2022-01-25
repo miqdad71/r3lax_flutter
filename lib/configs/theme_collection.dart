@@ -4,11 +4,45 @@ class CollectionTheme {
   ///Get collection theme
   /// primaryLight/primaryDark...
   static ThemeData getCollectionTheme({
-    String theme = "primaryLight",
+    String theme = "relaxLight",
     String font = "Raleway",
   }) {
     ColorScheme colorScheme;
     switch (theme) {
+      case "relaxLight":
+        colorScheme = ColorScheme.light(
+          primary: Colors.blue,
+          primaryVariant: Colors.blue,
+          secondary: Colors.blueAccent,
+          secondaryVariant: Colors.blueAccent,
+          surface: Color(0xfff2f2f2),
+          background: Colors.white,
+          error: Colors.red,
+          onPrimary: Colors.white,
+          onSecondary: Colors.black,
+          onSurface: Colors.black,
+          onBackground: Colors.black,
+          onError: Colors.white,
+          brightness: Brightness.light,
+        );
+        break;
+      case "relaxDark":
+        colorScheme = ColorScheme.dark(
+          primary: Color(0xffe5634d),
+          primaryVariant: Color(0xffad3324),
+          secondary: Color(0xff4a91a4),
+          secondaryVariant: Color(0xff0d6375),
+          surface: Color(0xff121212),
+          background: Color(0xff010101),
+          error: Colors.red,
+          onPrimary: Colors.black,
+          onSecondary: Colors.black,
+          onSurface: Colors.white,
+          onBackground: Colors.white,
+          onError: Colors.black,
+          brightness: Brightness.dark,
+        );
+        break;
       case "primaryLight":
         colorScheme = ColorScheme.light(
           primary: Color(0xffe5634d),

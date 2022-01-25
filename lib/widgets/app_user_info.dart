@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import '../models/model.dart';
 import '../widgets/widget.dart';
 
-enum AppUserType { basic, information }
+enum AppUserType { basic, information, home }
 
 class AppUserInfo extends StatelessWidget {
   final UserModel? user;
@@ -137,20 +137,20 @@ class AppUserInfo extends StatelessWidget {
                       ),
                     ),
                   ),
-                  Container(
-                    padding: EdgeInsets.all(4),
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      color: Theme.of(context).primaryColor,
-                    ),
-                    child: Text(
-                      "${user?.subfunc}",
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 8,
-                      ),
-                    ),
-                  )
+                  // Container(
+                  //   padding: EdgeInsets.all(4),
+                  //   decoration: BoxDecoration(
+                  //     shape: BoxShape.circle,
+                  //     color: Theme.of(context).primaryColor,
+                  //   ),
+                  //   child: Text(
+                  //     "new",
+                  //     style: TextStyle(
+                  //       color: Colors.white,
+                  //       fontSize: 8,
+                  //     ),
+                  //   ),
+                  // )
                 ],
               ),
               Expanded(
@@ -176,6 +176,60 @@ class AppUserInfo extends StatelessWidget {
                         user!.users?.email ?? 'N/A',
                         maxLines: 1,
                         style: Theme.of(context).textTheme.caption,
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ],
+          ),
+        );
+      case AppUserType.home:
+        return InkWell(
+          onTap: onPressed,
+          child: Row(
+            children: <Widget>[
+              Stack(
+                alignment: Alignment.bottomRight,
+                children: <Widget>[
+                  Container(
+                    width: 60,
+                    height: 60,
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      border: Border.all(width: 2, color: Colors.white),
+                      image: DecorationImage(
+                        // image: AssetImage(user.image),
+                        image: NetworkImage(
+                            'https://app.phss.pertamina.com/relax/content/relax/image/no-image.jpg'),
+                        fit: BoxFit.fill,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+              Expanded(
+                child: Padding(
+                  padding: EdgeInsets.all(8.0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: <Widget>[
+                      Text(
+                        user!.users?.name ?? 'N/A',
+                        maxLines: 1,
+                        style: TextStyle(
+                            color: Colors.white, fontWeight: FontWeight.w500),
+                      ),
+                      Padding(
+                        padding: EdgeInsets.only(top: 4, bottom: 4),
+                        child: Text(
+                          user!.posname ?? 'N/A',
+                          maxLines: 1,
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 10.0,
+                          ),
+                        ),
                       ),
                     ],
                   ),

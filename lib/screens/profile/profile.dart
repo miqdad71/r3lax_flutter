@@ -60,6 +60,7 @@ class _ProfileState extends State<Profile> {
 
   ///On logout
   Future<void> _logout() async {
+    Navigator.pop(context);
     AppBloc.loginBloc.add(OnLogout());
   }
 

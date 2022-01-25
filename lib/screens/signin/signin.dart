@@ -98,7 +98,9 @@ class _SignInState extends State<SignIn> {
               children: <Widget>[
                 AppTextInput(
                   hintText: Translate.of(context)!.translate('account'),
-                  errorText: _validID,
+                  errorText: _validID != null
+                      ? Translate.of(context)!.translate(_validID!)
+                      : _validID,
                   icon: const Icon(Icons.clear),
                   controller: _textIDController,
                   focusNode: _focusID,
@@ -120,7 +122,9 @@ class _SignInState extends State<SignIn> {
                 const SizedBox(height: 8),
                 AppTextInput(
                   hintText: Translate.of(context)!.translate('password'),
-                  errorText: _validPass,
+                  errorText: _validPass != null
+                      ? Translate.of(context)!.translate(_validPass!)
+                      : _validPass,
                   textInputAction: TextInputAction.done,
                   onChanged: (text) {
                     setState(() {

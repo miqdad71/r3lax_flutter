@@ -1,4 +1,23 @@
 class Images {
+  /// image
+  static const String homeCover = "assets/images/img-cover.png";
+  static const String homeFooter = "assets/images/img-footer.png";
+
+  ///icon
+  static const String iconAttendanceForm =
+      "assets/images/ic-attendance-form.png";
+  static const String iconAttendanceList =
+      "assets/images/ic-attendance-list.png";
+  static const String iconR3Form = "assets/images/ic-r3-form.png";
+  static const String iconScanQr = "assets/images/ic-scan-qr.png";
+
+  ///swiper
+  static const String swpImg1 = "assets/images/swp-info-terkini.png";
+  static const String swpImg2 = "assets/images/swp-panduan-lengkap.png";
+  static const String swpImg3 = "assets/images/swp-protokol-covid.png";
+  static const String swpImg4 = "assets/images/swp-update.png";
+
+  /// delete
   static const String Intro1 = "assets/images/intro_1.png";
   static const String Intro2 = "assets/images/intro_2.png";
   static const String Intro3 = "assets/images/intro_3.png";
