@@ -95,7 +95,6 @@ class _HomeState extends State<Home> {
             Expanded(
               child: Stack(
                 children: [
-
                   InAppWebView(
                     key: webViewKey,
                     initialUrlRequest: URLRequest(
@@ -228,14 +227,19 @@ class MyAlert extends StatelessWidget {
       title: Text('Alert Dialog'),
       content: Text('Do you accept?'),
       actions: [
+        // TextButton(
+        //   onPressed: () => Navigator.pop(alertContext, false), // passing false
+        //   child: Text('No'),
+        // ),
+        // TextButton(
+        //   onPressed: () => Navigator.pop(alertContext, true), // passing true
+        //   child: Text('Yes'),
+        // ),
         TextButton(
-          onPressed: () => Navigator.pop(alertContext, false), // passing false
-          child: Text('No'),
-        ),
-        TextButton(
-          onPressed: () => Navigator.pop(alertContext, true), // passing true
-          child: Text('Yes'),
-        )
+            onPressed: () {
+              Navigator.pop(alertContext);
+            },
+            child: Text("OKE"))
       ],
     );
   }
