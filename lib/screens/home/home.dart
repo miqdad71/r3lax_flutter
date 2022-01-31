@@ -1,169 +1,298 @@
+import 'dart:async';
+import 'dart:collection';
 import 'dart:convert';
-
+import 'dart:io';
+import 'dart:typed_data';
 import 'package:flutter/material.dart';
-import '../../api/api.dart';
-import '../../blocs/bloc.dart';
-import '../../configs/config.dart';
-import '../../models/model.dart';
-// import '../../models/screen_models/screen_models.dart';
-import '../../utils/util.dart';
-import '../../widgets/widget.dart';
+import 'package:flutter_inappwebview/flutter_inappwebview.dart';
+import 'package:url_launcher/url_launcher.dart';
+
+Future main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+
+  if (Platform.isAndroid) {
+    await AndroidInAppWebViewController.setWebContentsDebuggingEnabled(true);
+  }
+
+  runApp(new Home());
+}
 
 class Home extends StatefulWidget {
-  const Home({Key? key}) : super(key: key);
-
   @override
-  _HomeState createState() => _HomeState();
+  _HomeState createState() => new _HomeState();
 }
 
 class _HomeState extends State<Home> {
-  void _profile() {
-    Navigator.pushNamed(context, Routes.profile);
+  final GlobalKey webViewKey = GlobalKey();
+
+  InAppWebViewController? webViewController;
+  InAppWebViewGroupOptions options = InAppWebViewGroupOptions(
+      crossPlatform: InAppWebViewOptions(
+        useShouldOverrideUrlLoading: true,
+        mediaPlaybackRequiresUserGesture: false,
+      ),
+      android: AndroidInAppWebViewOptions(
+        useHybridComposition: true,
+      ),
+      ios: IOSInAppWebViewOptions(
+        allowsInlineMediaPlayback: true,
+      ));
+
+  late PullToRefreshController pullToRefreshController;
+  String url = "";
+  double progress = 0;
+  final urlController = TextEditingController();
+
+  @override
+  void initState() {
+    super.initState();
+
+    pullToRefreshController = PullToRefreshController(
+      options: PullToRefreshOptions(
+        color: Colors.blue,
+      ),
+      onRefresh: () async {
+        if (Platform.isAndroid) {
+          webViewController?.reload();
+        } else if (Platform.isIOS) {
+          webViewController?.loadUrl(
+              urlRequest: URLRequest(url: await webViewController?.getUrl()));
+        }
+      },
+    );
   }
 
-  //Build profile UI
-  Widget _buildProfile() {
-    String? userstr = UtilPreferences.getString(Preferences.user);
-    UserModel user = UserModel.fromJson(jsonDecode(userstr!));
-
-    return AppUserInfo(
-      // user: _profilePage?.user,
-      user: user,
-      onPressed: _profile,
-      type: AppUserType.home,
-    );
-  }
-
-  Widget _buildGrid() {
-    List<Widget> listHomeMenu = <Widget>[];
-    listHomeMenu.add(
-      InkWell(
-        onTap: () {},
-        child: HomeMenu(
-            title: 'Attendance Form',
-            imgurl: Images.iconAttendanceForm,
-            onPressed: () {
-              Navigator.pushNamed(context, Routes.attendanceForm);
-            }),
-      ),
-    );
-    listHomeMenu.add(
-      InkWell(
-        onTap: () {},
-        child: HomeMenu(
-            title: 'Attendance List',
-            imgurl: Images.iconAttendanceList,
-            onPressed: () {
-              Navigator.pushNamed(context, Routes.attendanceList);
-            }),
-      ),
-    );
-    listHomeMenu.add(
-      InkWell(
-        onTap: () {},
-        child: HomeMenu(
-            title: 'R3forms',
-            imgurl: Images.iconR3Form,
-            onPressed: () {
-              Navigator.pushNamed(context, Routes.r3forms);
-            }),
-      ),
-    );
-    listHomeMenu.add(
-      InkWell(
-        onTap: () {},
-        child: HomeMenu(
-            title: 'Scan QR',
-            imgurl: Images.iconScanQr,
-            onPressed: () {
-              Navigator.pushNamed(context, Routes.scanqr);
-            }),
-      ),
-    );
-
-    return SizedBox(
-      height: 230.0,
-      child: GridView.count(
-        crossAxisCount: 4,
-        children: listHomeMenu,
-      ),
-    );
+  @override
+  void dispose() {
+    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-        // appBar: AppBar(
-        //   title: Text('Relax'),
-        //   backgroundColor: Colors.transparent,
-        // ),
-        // extendBodyBehindAppBar: true,
-        body: SafeArea(
-      child: Stack(
-        children: [
-          Positioned.fill(
-            child: Align(
-              alignment: Alignment.topCenter,
-              child: Container(
-                child: Image.asset(
-                  Images.homeCover,
-                  fit: BoxFit.contain,
-                ),
+    return MaterialApp(
+      home: Scaffold(
+          appBar: AppBar(title: const Text("Official InAppWebView website")),
+          body: SafeArea(
+              child: Column(children: <Widget>[
+            // AlertDialog(
+            //   title: Text('Alert Dialog'),
+            //   content: Text('Do you accept?'),
+            //   actions: [TextButton(onPressed: () {}, child: Text("OKE"))],
+            // ),
+            // const MyAlert(),
+            // TextField(
+            //   decoration: const InputDecoration(prefixIcon: Icon(Icons.search)),
+            //   controller: urlController,
+            //   keyboardType: TextInputType.url,
+            //   onSubmitted: (value) {
+            //     var url = Uri.parse(value);
+            //     if (url.scheme.isEmpty) {
+            //       url = Uri.parse("https://www.google.com/search?q=" + value);
+            //     }
+            //     webViewController?.loadUrl(urlRequest: URLRequest(url: url));
+            //   },
+            // ),
+            Expanded(
+              child: Stack(
+                children: [
+
+                  InAppWebView(
+                    key: webViewKey,
+                    initialUrlRequest: URLRequest(
+                        url:
+                            Uri.parse("https://app.phss.pertamina.com/relax/")),
+                    initialOptions: options,
+                    pullToRefreshController: pullToRefreshController,
+                    onWebViewCreated: (controller) {
+                      webViewController = controller;
+                    },
+                    onLoadStart: (controller, url) {
+                      setState(() {
+                        this.url = url.toString();
+                        urlController.text = this.url;
+                      });
+                    },
+                    androidOnPermissionRequest:
+                        (controller, origin, resources) async {
+                      return PermissionRequestResponse(
+                          resources: resources,
+                          action: PermissionRequestResponseAction.GRANT);
+                    },
+                    shouldOverrideUrlLoading:
+                        (controller, navigationAction) async {
+                      var uri = navigationAction.request.url!;
+
+                      if (![
+                        "http",
+                        "https",
+                        "file",
+                        "chrome",
+                        "data",
+                        "javascript",
+                        "about"
+                      ].contains(uri.scheme)) {
+                        if (await canLaunch(url)) {
+                          // Launch the App
+                          await launch(
+                            url,
+                          );
+                          // and cancel the request
+                          return NavigationActionPolicy.CANCEL;
+                        }
+                      }
+
+                      return NavigationActionPolicy.ALLOW;
+                    },
+                    onLoadStop: (controller, url) async {
+                      pullToRefreshController.endRefreshing();
+                      setState(() {
+                        this.url = url.toString();
+                        urlController.text = this.url;
+                      });
+                    },
+                    onLoadError: (controller, url, code, message) {
+                      pullToRefreshController.endRefreshing();
+                    },
+                    onProgressChanged: (controller, progress) {
+                      if (progress == 100) {
+                        pullToRefreshController.endRefreshing();
+                      }
+                      setState(() {
+                        this.progress = progress / 100;
+                        urlController.text = this.url;
+                      });
+                    },
+                    onUpdateVisitedHistory: (controller, url, androidIsReload) {
+                      setState(() {
+                        this.url = url.toString();
+                        urlController.text = this.url;
+                      });
+                    },
+                    onConsoleMessage: (controller, consoleMessage) {
+                      print(consoleMessage);
+                    },
+                  ),
+                  progress < 1.0
+                      ? LinearProgressIndicator(value: progress)
+                      : Container(),
+                  const MyAlert(),
+
+                  // AlertDialog(
+                  //   title: Text('Alert Dialog'),
+                  //   content: Text('Do you accept?'),
+                  //   actions: [
+                  //     TextButton(
+                  //         onPressed: () {
+                  //           Navigator.pop(dialogContext);
+                  //         },
+                  //         child: Text("OKE"))
+                  //   ],
+                  // ),
+                ],
               ),
             ),
-          ),
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Container(height: 55.0, child: _buildProfile()),
-          ),
-          Column(
-            children: [
-              const SizedBox(
-                height: 180.0,
-              ),
-              Expanded(
-                child: Container(
-                  decoration: BoxDecoration(
-                    borderRadius: const BorderRadius.vertical(
-                      top: Radius.circular(36.0),
-                    ),
-                    color: Theme.of(context).colorScheme.background,
-                  ),
-                  width: double.infinity,
-                  child: Column(
-                    children: [
-                      const SizedBox(
-                        height: 40.0,
-                      ),
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            _buildGrid(),
-                            Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: Column(
-                                children: [
-                                  AppHeadlineTitle(title: 'Info Terbaru'),
-                                  AppHeadlineTitle(title: 'Layanan Asistensi'),
-                                ],
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                      Image.asset(
-                        Images.homeFooter,
-                        fit: BoxFit.contain,
-                      ),
-                    ],
-                  ),
+            ButtonBar(
+              alignment: MainAxisAlignment.center,
+              children: <Widget>[
+                ElevatedButton(
+                  child: const Icon(Icons.arrow_back),
+                  onPressed: () {
+                    webViewController?.goBack();
+                  },
                 ),
-              ),
-            ],
-          ),
-        ],
-      ),
-    ));
+                ElevatedButton(
+                  child: const Icon(Icons.arrow_forward),
+                  onPressed: () {
+                    webViewController?.goForward();
+                  },
+                ),
+                ElevatedButton(
+                  child: const Icon(Icons.refresh),
+                  onPressed: () {
+                    webViewController?.reload();
+                  },
+                ),
+              ],
+            ),
+          ]))),
+    );
   }
+}
+
+class MyAlert extends StatelessWidget {
+  const MyAlert({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext alertContext) {
+    return AlertDialog(
+      title: Text('Alert Dialog'),
+      content: Text('Do you accept?'),
+      actions: [
+        TextButton(
+          onPressed: () => Navigator.pop(alertContext, false), // passing false
+          child: Text('No'),
+        ),
+        TextButton(
+          onPressed: () => Navigator.pop(alertContext, true), // passing true
+          child: Text('Yes'),
+        )
+      ],
+    );
+  }
+}
+
+// class MyAlert extends StatelessWidget {
+//   const MyAlert({Key? key}) : super(key: key);
+
+//   @override
+//   Widget build(BuildContext alertContext) {
+//     return Padding(
+//       padding: const EdgeInsets.all(20),
+//       child: ElevatedButton(
+//         child: Text('Show alert'),
+//         onPressed: () {
+//           showAlertDialog(alertContext);
+//         },
+//       ),
+//     );
+//   }
+// }
+
+showAlertDialog(BuildContext dialogContext) {
+  // AlertDialog(
+  //   title: Text('Alert Dialog'),
+  //   content: Text('Do you accept?'),
+  //   actions: [
+  //     TextButton(
+  //         onPressed: () {
+  //           Navigator.pop(dialogContext);
+  //         },
+  //         child: Text("OKE"))
+  //   ],
+  // );
+
+  // Create button
+  // Widget okButton = TextButton(
+  //   child: Text("OK"),
+  //   onPressed: () {
+  //     Navigator.of(dialogContext).pop();
+  //   },
+  // );
+
+  // // Create AlertDialog
+  // AlertDialog alert = AlertDialog(
+  //   title: Text("Simple Alert"),
+  //   content: Text("This is an alert message."),
+  //   actions: [
+  //     okButton,
+  //   ],
+  // );
+
+  // show the dialog
+  // showDialog(
+  //   context: dialogContext,
+  //   builder: (BuildContext context) {
+  //     return alert;
+  //   },
+  // );
 }
