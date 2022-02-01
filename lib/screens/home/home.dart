@@ -1,11 +1,13 @@
-import 'dart:async';
-import 'dart:collection';
-import 'dart:convert';
 import 'dart:io';
+import 'dart:async';
+import 'dart:convert';
+import 'dart:collection';
 import 'dart:typed_data';
+import 'package:alert/alert.dart';
+// import 'package:freezed/builder.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 
 Future main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -16,6 +18,25 @@ Future main() async {
 
   runApp(new Home());
 }
+
+// void main() {
+//   runZonedGuarded(() async {
+//     WidgetsFlutterBinding.ensureInitialized();
+//     await myErrorsHandler.initialize();
+//     FlutterError.onError = (FlutterErrorDetails details) {
+//       FlutterError.presentError(details);
+//       myErrorsHandler.onError(details);
+//       exit(1);
+//     };
+//     if (Platform.isAndroid) {
+//       await AndroidInAppWebViewController.setWebContentsDebuggingEnabled(true);
+//     }
+//     runApp(new Home());
+//   }, (Object error, StackTrace stack) {
+//     myErrorsHandler.onError(error, stack);
+//     exit(1);
+//   });
+// }
 
 class Home extends StatefulWidget {
   @override
@@ -74,12 +95,6 @@ class _HomeState extends State<Home> {
           appBar: AppBar(title: const Text("Official InAppWebView website")),
           body: SafeArea(
               child: Column(children: <Widget>[
-            // AlertDialog(
-            //   title: Text('Alert Dialog'),
-            //   content: Text('Do you accept?'),
-            //   actions: [TextButton(onPressed: () {}, child: Text("OKE"))],
-            // ),
-            // const MyAlert(),
             // TextField(
             //   decoration: const InputDecoration(prefixIcon: Icon(Icons.search)),
             //   controller: urlController,
@@ -174,15 +189,14 @@ class _HomeState extends State<Home> {
                   progress < 1.0
                       ? LinearProgressIndicator(value: progress)
                       : Container(),
-                  const MyAlert(),
-
                   // AlertDialog(
                   //   title: Text('Alert Dialog'),
                   //   content: Text('Do you accept?'),
                   //   actions: [
                   //     TextButton(
                   //         onPressed: () {
-                  //           Navigator.pop(dialogContext);
+                  //           Alert(message: 'Test').show();
+                  //           // Navigator.pop(context);
                   //         },
                   //         child: Text("OKE"))
                   //   ],
@@ -211,6 +225,12 @@ class _HomeState extends State<Home> {
                     webViewController?.reload();
                   },
                 ),
+                ElevatedButton(
+                  child: const Icon(Icons.ac_unit),
+                  onPressed: () {
+                    showAlertDialog(context);
+                  },
+                ),
               ],
             ),
           ]))),
@@ -218,85 +238,29 @@ class _HomeState extends State<Home> {
   }
 }
 
-class MyAlert extends StatelessWidget {
-  const MyAlert({Key? key}) : super(key: key);
-
-  @override
-  Widget build(BuildContext alertContext) {
-    return AlertDialog(
-      title: Text('Alert Dialog'),
-      content: Text('Do you accept?'),
-      actions: [
-        // TextButton(
-        //   onPressed: () => Navigator.pop(alertContext, false), // passing false
-        //   child: Text('No'),
-        // ),
-        // TextButton(
-        //   onPressed: () => Navigator.pop(alertContext, true), // passing true
-        //   child: Text('Yes'),
-        // ),
-        TextButton(
-            onPressed: () {
-              Navigator.pop(alertContext);
-            },
-            child: Text("OKE"))
-      ],
-    );
-  }
-}
-
-// class MyAlert extends StatelessWidget {
-//   const MyAlert({Key? key}) : super(key: key);
-
-//   @override
-//   Widget build(BuildContext alertContext) {
-//     return Padding(
-//       padding: const EdgeInsets.all(20),
-//       child: ElevatedButton(
-//         child: Text('Show alert'),
-//         onPressed: () {
-//           showAlertDialog(alertContext);
-//         },
-//       ),
-//     );
-//   }
-// }
-
-showAlertDialog(BuildContext dialogContext) {
-  // AlertDialog(
-  //   title: Text('Alert Dialog'),
-  //   content: Text('Do you accept?'),
-  //   actions: [
-  //     TextButton(
-  //         onPressed: () {
-  //           Navigator.pop(dialogContext);
-  //         },
-  //         child: Text("OKE"))
-  //   ],
-  // );
-
+showAlertDialog(BuildContext context) {
   // Create button
-  // Widget okButton = TextButton(
-  //   child: Text("OK"),
-  //   onPressed: () {
-  //     Navigator.of(dialogContext).pop();
-  //   },
-  // );
+  Widget okButton = FlatButton(
+    child: Text("OK"),
+    onPressed: () {
+      Navigator.of(context).pop();
+    },
+  );
 
-  // // Create AlertDialog
-  // AlertDialog alert = AlertDialog(
-  //   title: Text("Simple Alert"),
-  //   content: Text("This is an alert message."),
-  //   actions: [
-  //     okButton,
-  //   ],
-  // );
+  // Create AlertDialog
+  AlertDialog alert = AlertDialog(
+    title: Text("Simple Alert"),
+    content: Text("This is an alert message."),
+    actions: [
+      okButton,
+    ],
+  );
 
   // show the dialog
-  // showDialog(
-  //   context: dialogContext,
-  //   builder: (BuildContext context) {
-  //     return alert;
-  //   },
-  // );
+  showDialog(
+    context: context,
+    builder: (BuildContext context) {
+      return alert;
+    },
+  );
 }
