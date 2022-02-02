@@ -1,3 +1,4 @@
+import 'dart:developer';
 import 'dart:io';
 import 'dart:async';
 import 'dart:convert';
@@ -92,7 +93,8 @@ class _HomeState extends State<Home> {
   Widget build(BuildContext context) {
     return MaterialApp(
       home: Scaffold(
-          appBar: AppBar(title: const Text("Official InAppWebView website")),
+          backgroundColor: Colors.blue[600],
+          // appBar: AppBar(title: const Text("Official InAppWebView website")),
           body: SafeArea(
               child: Column(children: <Widget>[
             // TextField(
@@ -125,6 +127,8 @@ class _HomeState extends State<Home> {
                         this.url = url.toString();
                         urlController.text = this.url;
                       });
+                      print('onLoadStart');
+                      log('onLoadStart');
                     },
                     androidOnPermissionRequest:
                         (controller, origin, resources) async {
@@ -163,9 +167,14 @@ class _HomeState extends State<Home> {
                         this.url = url.toString();
                         urlController.text = this.url;
                       });
+                      print('onLoadStop');
+                      log('onLoadStop');
                     },
                     onLoadError: (controller, url, code, message) {
                       pullToRefreshController.endRefreshing();
+                      print('onLoadError');
+                      log('onLoadError');
+                      log(message, name: 'onLoadError');
                     },
                     onProgressChanged: (controller, progress) {
                       if (progress == 100) {
@@ -175,32 +184,23 @@ class _HomeState extends State<Home> {
                         this.progress = progress / 100;
                         urlController.text = this.url;
                       });
+                      log('onProgressChanged');
                     },
                     onUpdateVisitedHistory: (controller, url, androidIsReload) {
                       setState(() {
                         this.url = url.toString();
                         urlController.text = this.url;
                       });
+                      log('onUpdateVisitedHistory');
                     },
                     onConsoleMessage: (controller, consoleMessage) {
                       print(consoleMessage);
+                      log('onConsoleMessage');
                     },
                   ),
                   progress < 1.0
                       ? LinearProgressIndicator(value: progress)
                       : Container(),
-                  // AlertDialog(
-                  //   title: Text('Alert Dialog'),
-                  //   content: Text('Do you accept?'),
-                  //   actions: [
-                  //     TextButton(
-                  //         onPressed: () {
-                  //           Alert(message: 'Test').show();
-                  //           // Navigator.pop(context);
-                  //         },
-                  //         child: Text("OKE"))
-                  //   ],
-                  // ),
                 ],
               ),
             ),
